@@ -75,7 +75,8 @@ def main(argv):
         td_elements = tr_elements[i].find_all('td')
         for j in range(rows):
             try:
-                Matrix[i][j] = td_elements[j].text.strip()
+                if td_elements[j].text.strip():
+                    Matrix[i][j] = td_elements[j].text.strip()
             except IndexError:
                 pass
     #print the Matrix
@@ -84,8 +85,12 @@ def main(argv):
         for e in row:
             value = value + e + "|"
         print(value)
-    
-        for row in Matrix:
+    #find the episode
+    for row in Matrix:
+        if episode_name in row[4]: #should replace 4 with some way to search for the coloumn with the most letters across al rows
+            print("the episode was found in " + row[4])
+            
+
 
     
 
@@ -93,8 +98,6 @@ def main(argv):
 
     
 
-
-    
 if __name__ == "__main__":
     #print(sys.version)
     main(sys.argv[1:])
