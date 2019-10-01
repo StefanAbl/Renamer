@@ -11,8 +11,9 @@ import pandas as pd
 def main(argv):
     show_name = ''
     episode_name = ''
+    debug = False
     try:
-        opts, args = getopt.getopt(argv,"hs:e:")
+        opts, args = getopt.getopt(argv,"dhs:e:")
     except getopt.GetoptError:
         print('test.py -i <inputfile> -o <outputfile> error error') #change
         sys.exit(2)
@@ -24,14 +25,20 @@ def main(argv):
             show_name = arg
         elif opt in ("-e"):
             episode_name = arg
-    print('Show name is ' + show_name)
-    print('episode name is ' + episode_name)
+        elif opt in ("-d"):
+            debug = True
+    
+            
+    if debug:
+        print('Show name is ' + show_name)
+        print('episode name is ' + episode_name)
     
     #prep the search url
     show_name = urllib.parse.quote(show_name)
     url = 'https://www.fernsehserien.de/suche/' + show_name
     #values = {'s':'show_name','submit':'search'}
-    print("URL is: " + url)
+    if debug:
+        print("URL is: " + url)
 
     #get the search page
     #data = urllib.parse.urlencode(values)
@@ -50,7 +57,8 @@ def main(argv):
 
     #construct episode url
     url = 'https://www.fernsehserien.de' + link + '/episodenguide'
-    print("URL to show page is: " + url)
+    if debug:
+        print("URL to show page is: " + url)
 
     #get show page
     req = urllib.request.Request(url) 
@@ -69,32 +77,49 @@ def main(argv):
     rows = 0
     for tr in tr_elements:
         rows = max(rows, len(tr))
-    print("Table is of size" + str(cols) + "x" + str(rows))
     Matrix = [[''] * rows for x in range(cols)]
     for i in range(cols):
         td_elements = tr_elements[i].find_all('td')
         for j in range(rows):
             try:
-                if td_elements[j].text.strip():
+                if not td_elements[j].text.strip().isspace():
                     Matrix[i][j] = td_elements[j].text.strip()
             except IndexError:
                 pass
     #print the Matrix
-    for row in Matrix:
-        value = ''
-        for e in row:
-            value = value + e + "|"
-        print(value)
+    if debug:
+        for row in Matrix:
+            value = ''
+            for e in row:
+                value = value + e + "|"
+            print(value)
     #find the episode
-    for row in Matrix:
-        if episode_name in row[4]: #should replace 4 with some way to search for the coloumn with the most letters across al rows
-            print("the episode was found in " + row[4])
+    location = -1
+    for i in range(len(Matrix)):
+        inrow = False
+        for cell in Matrix[i]:
+            if not cell.find(episode_name) == -1:
+                inrow = True
+                location = i
+        if inrow:
+            if debug:
+                stringy = ""
+                for cell in row:
+                    stringy = stringy + cell + "|"
+                print("Found in this line: " + stringy)
+            break
+    if location == -1:
+        print("An episode by this name could not be found mybe there was an error try with `-d`")
+    else:
+        season_number = str(Matrix[location][3])[:-1]
+        if len(season_number) == 1:
+            season_number = "0" + season_number
+        number = "S" + season_number + "E" + Matrix[location][4]
+        print("The episodes number is: " + number)    
             
 
 
     
-
-    #print("Staffel: " + str(staffel) + " Episode: " + episode)
 
     
 
@@ -103,8 +128,6 @@ if __name__ == "__main__":
     main(sys.argv[1:])
 
 
-#page = "https://www.fernsehserien.de/suche/" + name
-#print(page)
 
 
 
