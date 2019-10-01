@@ -8,6 +8,8 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 import pandas as pd
 
+
+#gets the episode number in formate SxxExx given a show and episode name
 def main(argv):
     show_name = ''
     episode_name = ''
@@ -15,11 +17,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"dhs:e:")
     except getopt.GetoptError:
-        print('test.py -i <inputfile> -o <outputfile> error error') #change
+        print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('test.py -i <inputfile> -o <outputfile>') #change
+            print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
             sys.exit()
         elif opt in ("-s"):
             show_name = arg
@@ -115,7 +117,8 @@ def main(argv):
         if len(season_number) == 1:
             season_number = "0" + season_number
         number = "S" + season_number + "E" + Matrix[location][4]
-        print("The episodes number is: " + number)    
+        print("The episodes number is: " + number)
+        return number    
             
 
 
