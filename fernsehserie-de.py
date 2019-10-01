@@ -7,6 +7,7 @@ import urllib.parse
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 import pandas as pd
+import numpy as np
 
 
 #gets the episode number in formate SxxExx given a show and episode name
@@ -30,7 +31,8 @@ def main(argv):
         elif opt in ("-d"):
             debug = True
     
-            
+    import re
+    regex = re.compile(".*?\((.*?)\)")        
     if debug:
         print('Show name is ' + show_name)
         print('episode name is ' + episode_name)
@@ -75,26 +77,23 @@ def main(argv):
     table = table.find("table")  
     #convert the usable entries into a matrix
     tr_elements = table.find_all('tr', attrs={'class': 'ep-hover episode-desktop'})
-    cols = len(tr_elements)
-    rows = 0
+    rowx = len(tr_elements)
+    col = 0
     for tr in tr_elements:
-        rows = max(rows, len(tr))
-    Matrix = [[''] * rows for x in range(cols)]
-    for i in range(cols):
+        col = max(col, len(tr))
+    Matrix = [[''] * (col + 1) for x in range(rowx)]
+    for i in range(rowx):
         td_elements = tr_elements[i].find_all('td')
-        for j in range(rows):
+        for j in range(col):
             try:
                 if not td_elements[j].text.strip().isspace():
-                    Matrix[i][j] = td_elements[j].text.strip()
+                    Matrix[i][j] = remove_text_inside_brackets(td_elements[j].text.strip()).strip()
             except IndexError:
                 pass
+        Matrix[i][col] = str(levenshtein(Matrix[i][6], episode_name))
     #print the Matrix
     if debug:
-        for row in Matrix:
-            value = ''
-            for e in row:
-                value = value + e + "|"
-            print(value)
+        printMatrix(Matrix)
     #find the episode
     location = -1
     for i in range(len(Matrix)):
@@ -106,7 +105,7 @@ def main(argv):
         if inrow:
             if debug:
                 stringy = ""
-                for cell in row:
+                for cell in Matrix[location]:
                     stringy = stringy + cell + "|"
                 print("Found in this line: " + stringy)
             break
@@ -118,11 +117,70 @@ def main(argv):
             season_number = "0" + season_number
         number = "S" + season_number + "E" + Matrix[location][4]
         print("The episodes number is: " + number)
-        return number    
-            
+        
 
+    #find the location using the results of the levenshtein algorithm
+    for row in Matrix:
+        try:
+            Matrix[i][len(row) - 1] = int(Matrix[i][len(row) - 1])
+        except ValueError:
+            print("Could not convert " + Matrix[i][len(row) - 1] + " to int")
+    df = pd.DataFrame(Matrix)
+    print(len(df.columns))
+    print(df)
+    print(df.sort_values('10' , na_position='last'))
+    number = number
+    return number
 
-    
+def levenshtein(seq1, seq2):
+    size_x = len(seq1) + 1
+    size_y = len(seq2) + 1
+    matrix = [[0] * size_y for x in range(size_x)]
+    for x in range(size_x - 1 ):
+        matrix [x ][0] = x
+    for y in range(size_y - 1):
+        matrix [0][y] = y
+
+    for x in range(1, size_x - 1):
+        for y in range(1, size_y - 1):
+            if seq1[x-1] == seq2[y-1]:
+                matrix [x][y] = min(
+                    matrix[x-1][y] + 1,
+                    matrix[x-1][y-1],
+                    matrix[x][y-1] + 1
+                )
+            else:
+                matrix [x][y] = min(
+                    matrix[x-1][y] + 1,
+                    matrix[x-1][y-1] + 1,
+                    matrix[x][y-1] + 1
+                )
+    #print (matrix)
+    return (matrix[size_x - 2][size_y - 2])
+
+def remove_text_inside_brackets(text, brackets="()"):
+    count = [0] * (len(brackets) // 2) # count open/close brackets
+    saved_chars = []
+    for character in text:
+        for i, b in enumerate(brackets):
+            if character == b: # found bracket
+                kind, is_close = divmod(i, 2)
+                count[kind] += (-1)**is_close # `+1`: open, `-1`: close
+                if count[kind] < 0: # unbalanced bracket
+                    count[kind] = 0  # keep it
+                else:  # found bracket to remove
+                    break
+        else: # character is not a [balanced] bracket
+            if not any(count): # outside brackets
+                saved_chars.append(character)
+    return ''.join(saved_chars)
+
+def printMatrix(m):
+    for row in m:
+            value = ''
+            for e in row:
+                value = value + e + "|"
+            print(value)    
 
     
 
