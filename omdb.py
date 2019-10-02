@@ -18,12 +18,11 @@ def main(argv):
         elif opt in ("-d"):
             debug = True
 
- if debug:
-        print('Show name is ' + show_name)
-        print('episode name is ' + episode_name)
+if debug:
+    print('Show name is ' + show_name)
+    print('episode name is ' + episode_name)
 #prep the search url
 show_name = urllib.parse.quote(show_name)
-data = 
 
 
 
