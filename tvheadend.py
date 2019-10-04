@@ -32,7 +32,7 @@ def tvheadend(file="String", debug = False):
     
     if debug:
         print("The show is: " + show + " and the Episode: " + title)
-
+    return (show, title)
 
 
 

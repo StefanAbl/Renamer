@@ -11,30 +11,9 @@ import numpy as np
 
 
 #gets the episode number in formate SxxExx given a show and episode name
-def main(argv):
-    show_name = ''
-    episode_name = ''
-    debug = False
-    try:
-        opts, args = getopt.getopt(argv,"dhs:e:")
-    except getopt.GetoptError:
-        print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
-            sys.exit()
-        elif opt in ("-s"):
-            show_name = arg
-        elif opt in ("-e"):
-            episode_name = arg
-        elif opt in ("-d"):
-            debug = True
-           
-    if debug:
-        print('Show name is ' + show_name)
-        print('episode name is ' + episode_name)
-    
+
+
+def fernsehserie(show_name, episode_name, debug = False)    
     #prep the search url
     show_name = urllib.parse.quote(show_name)
     url = 'https://www.fernsehserien.de/suche/' + show_name
@@ -189,6 +168,30 @@ def printMatrix(m):
                 value = value + e + "|"
             print(value)    
 
+def main(argv):
+    show_name = ''
+    episode_name = ''
+    debug = False
+    try:
+        opts, args = getopt.getopt(argv,"dhs:e:")
+    except getopt.GetoptError:
+        print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
+            sys.exit()
+        elif opt in ("-s"):
+            show_name = arg
+        elif opt in ("-e"):
+            episode_name = arg
+        elif opt in ("-d"):
+            debug = True
+           
+    if debug:
+        print('Show name is ' + show_name)
+        print('episode name is ' + episode_name)
+    fernsehserie(show_name, episode_name, debug)
     
 
 if __name__ == "__main__":
