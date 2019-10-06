@@ -24,7 +24,9 @@ def main(argv):
 def renamer(fileName, debug):
     (show, episode) = tvheadend.tvheadend(fileName, debug)
     number = fernsehserie.fernsehserie(show, episode, debug)
-    return number
+    fullName = show + " - " + number + " - " + episode
+    print(fullName)
+    return fullName
 
 
 

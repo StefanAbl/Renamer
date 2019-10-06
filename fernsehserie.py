@@ -113,7 +113,8 @@ def fernsehserie(show_name, episode_name, debug = False):
     if len(season_number) == 1:
         season_number = "0" + season_number
     number = "S" + season_number + "E" + str(df[4].iloc[0])
-    print("The episodes number is: " + number)
+    if debug:
+        print("The episodes number is: " + number)
 
     return number
 
@@ -190,7 +191,8 @@ def main(argv):
     if debug:
         print('Show name is ' + show_name)
         print('episode name is ' + episode_name)
-    fernsehserie(show_name, episode_name, debug)
+    number = fernsehserie(show_name, episode_name, debug)
+    print(number)
     
 
 if __name__ == "__main__":
