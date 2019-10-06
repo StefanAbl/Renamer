@@ -3,7 +3,7 @@ def main(argv):
     file = ''
     debug = False
     try:
-        opts, args = getopt.getopt(argv,"hdf:")
+        opts = getopt.getopt(argv,"hdf:")
     except getopt.GetoptError:
         print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
         sys.exit(2)

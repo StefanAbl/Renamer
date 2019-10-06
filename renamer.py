@@ -6,7 +6,7 @@ def main(argv):
     fileName = ''
     debug = False
     try:
-        opts, args = getopt.getopt(argv,"dhf:")
+        opts = getopt.getopt(argv,"dhf:")
     except getopt.GetoptError:
         print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
         sys.exit(2)
@@ -20,7 +20,7 @@ def main(argv):
             debug = True
 
     (show, episode) = tvheadend.tvheadend(fileName, debug)
-    number = fernsehserie(show, episode, debug)
+    number = fernsehserie.fernsehserie(show, episode, debug)
     return number
 
 

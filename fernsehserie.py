@@ -1,7 +1,6 @@
 
 import sys
 import getopt
-import ssl
 import urllib.request
 import urllib.parse
 from urllib.request import urlopen, Request
@@ -13,7 +12,7 @@ import numpy as np
 #gets the episode number in formate SxxExx given a show and episode name
 
 
-def fernsehserie(show_name, episode_name, debug = False)    
+def fernsehserie(show_name, episode_name, debug = False):
     #prep the search url
     show_name = urllib.parse.quote(show_name)
     url = 'https://www.fernsehserien.de/suche/' + show_name
@@ -173,7 +172,7 @@ def main(argv):
     episode_name = ''
     debug = False
     try:
-        opts, args = getopt.getopt(argv,"dhs:e:")
+        opts = getopt.getopt(argv,"dhs:e:")
     except getopt.GetoptError:
         print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
         sys.exit(2)
