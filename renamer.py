@@ -18,7 +18,10 @@ def main(argv):
             fileName = arg
         elif opt in ("-d"):
             debug = True
-
+    return renamer(fileName, debug)
+    
+    
+def renamer(fileName, debug):
     (show, episode) = tvheadend.tvheadend(fileName, debug)
     number = fernsehserie.fernsehserie(show, episode, debug)
     return number
