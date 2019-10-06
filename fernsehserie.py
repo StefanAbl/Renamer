@@ -193,6 +193,7 @@ def main(argv):
         print('episode name is ' + episode_name)
     number = fernsehserie(show_name, episode_name, debug)
     print(number)
+    return number
     
 
 if __name__ == "__main__":
