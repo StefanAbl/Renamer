@@ -3,7 +3,7 @@ def main(argv):
     file = ''
     debug = False
     try:
-        opts = getopt.getopt(argv,"hdf:")
+        opts, args = getopt.getopt(argv,"hdf:")
     except getopt.GetoptError:
         print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
         sys.exit(2)
@@ -21,12 +21,15 @@ def tvheadend(file="String", debug = False):
     if debug:
         print("The file given is:" + file)
     show = file[:file.find('.')]
+
     title = file.split('.')[1]
     #print("First " + title)
-    title = title[:title.rfind(', ')]
+    title = title[:title.find(', ')]
     #print("Second " + title)
     if "." in title:
-        title = title[:title.rfind('.')]
+        title = title[:title.rfind('.') + 1]
+    if "Serie" in title or "Dramedy" in title:
+        title = title[:title.rfind(" ")]
 
 
     
