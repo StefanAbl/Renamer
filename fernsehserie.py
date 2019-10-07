@@ -173,7 +173,7 @@ def main(argv):
     episode_name = ''
     debug = False
     try:
-        opts = getopt.getopt(argv,"dhs:e:")
+        opts, args = getopt.getopt(argv,"dhs:e:")
     except getopt.GetoptError:
         print('fernsehserie-de.py -s "Show Name" -e "Episode name" ') #change
         sys.exit(2)
